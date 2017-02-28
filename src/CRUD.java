@@ -317,19 +317,24 @@ public class CRUD extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    int confirm = JOptionPane.showConfirmDialog(this, "Anda yakin Menghapus Data!","",JOptionPane.YES_NO_OPTION);
         int baris = DATA.getSelectedRow();
+        if (confirm ==0) {
+  
         if (baris != -1) {
             String NIS = DATA.getValueAt(baris, 0).toString();
             String SQL = "DELETE FROM t_siswa WHERE NIS='"+NIS+"'";
             int status = KoneksiDB.execute(SQL);
-            if (status==1) {
+            
+            if (status==1) {    
                 JOptionPane.showMessageDialog(this,"Data Berhasil dihapus", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-            }else{
+            }else {
                 JOptionPane.showMessageDialog(this,"Data Gagal dihapus", "Gagal", JOptionPane.WARNING_MESSAGE);
             }
         }else{
             JOptionPane.showMessageDialog(this,"Pilih Baris Data Terlebih Dahulu","Error",JOptionPane.WARNING_MESSAGE);
         }
+    }
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
