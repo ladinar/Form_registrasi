@@ -1,13 +1,17 @@
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -34,6 +38,8 @@ public class CRUD extends javax.swing.JFrame {
      */
     public CRUD() {
         initComponents();
+          SetJam(); SetTanggal();
+                
     }
 
     /**
@@ -50,9 +56,8 @@ public class CRUD extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
         labeltanggal = new javax.swing.JLabel();
+        labeljam = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -108,22 +113,17 @@ public class CRUD extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(255, 51, 0));
         jPanel5.setLayout(null);
 
-        jLabel13.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("Jam :");
-        jPanel5.add(jLabel13);
-        jLabel13.setBounds(570, 40, 70, 20);
-
-        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel14.setText("Tanggal :");
-        jPanel5.add(jLabel14);
-        jLabel14.setBounds(570, 20, 70, 20);
-
         labeltanggal.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         labeltanggal.setForeground(new java.awt.Color(255, 255, 255));
+        labeltanggal.setText("Tanggal :");
         jPanel5.add(labeltanggal);
         labeltanggal.setBounds(630, 20, 100, 20);
+
+        labeljam.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labeljam.setForeground(new java.awt.Color(255, 255, 255));
+        labeljam.setText("Jam :");
+        jPanel5.add(labeljam);
+        labeljam.setBounds(630, 40, 60, 20);
 
         jPanel1.add(jPanel5);
         jPanel5.setBounds(10, 10, 870, 80);
@@ -354,7 +354,16 @@ public class CRUD extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void DATAMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DATAMouseClicked
+       
         int baris = DATA.getSelectedRow();
+        SimpleDateFormat date = new SimpleDateFormat("yyy-MM-dd");
+        Date dateValue = null;
+         try {
+            dateValue = date.parse((String) DATA.getValueAt(baris, 4));
+        } catch (ParseException ex) {
+            Logger.getLogger(CRUD.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      
         if (baris != -1) {
             NIS.setText(DATA.getValueAt(baris, 0).toString());
             NAMA.setText(DATA.getValueAt(baris, 1).toString());
@@ -363,11 +372,11 @@ public class CRUD extends javax.swing.JFrame {
             }else{
             rb_perempuan.setSelected(true);
             }
-             KELAS.setText(DATA.getValueAt(baris, 3).toString());
-        TempatLahir.setText(DATA.getValueAt(baris, 4).toString());
-        Tanggal.setDate((Date) DATA.getValueAt(baris, 5));
-        EMAIL.setText(DATA.getValueAt(baris, 6).toString());
-        ALAMAT.setText(DATA.getValueAt(baris, 7).toString());
+            Tanggal.setDate(dateValue);
+            KELAS.setText(DATA.getValueAt(baris, 5).toString());
+            TempatLahir.setText(DATA.getValueAt(baris, 3).toString());
+            EMAIL.setText(DATA.getValueAt(baris, 6).toString());
+            ALAMAT.setText(DATA.getValueAt(baris, 7).toString());
         }
        
         // TODO add your handling code here:
@@ -386,6 +395,8 @@ public class CRUD extends javax.swing.JFrame {
         buttonGroup1.clearSelection();
         TempatLahir.setText("");
         ALAMAT.setText("");
+        EMAIL.setText("");
+        Tanggal.setDate(null);
 
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -546,8 +557,6 @@ public class CRUD extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -564,14 +573,14 @@ public class CRUD extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labeljam;
     private javax.swing.JLabel labeltanggal;
     private javax.swing.JRadioButton rb_laki;
     private javax.swing.JRadioButton rb_perempuan;
     // End of variables declaration//GEN-END:variables
 
     public void selectData() {
-        
-        String kolom[]={"Nis","Nama","JenisKelamin","TempatLahir","TanggalLahir","Kelas","Alamat","Email"};
+        String kolom[]={"Nis","Nama","JenisKelamin","TempatLahir","TanggalLahir","Kelas","Email","Alamat"};
         DefaultTableModel dtm = new DefaultTableModel(null, kolom);   
         String SQL = "SELECT * FROM t_siswa";
         ResultSet rs = KoneksiDB.executeQuery(SQL);
@@ -586,11 +595,12 @@ public class CRUD extends javax.swing.JFrame {
                     JenisKelamin = "Perempuan";
                 }
                 String Kelas = rs.getString(4);
-                    String Email = rs.getString(5);
-                    String Alamat = rs.getString(6);
-                    String TanggalLahir = rs.getString(7);
-                    String TempatLahir = rs.getString(8);
-                    String data[] = {NIS,NamaSiswa,JenisKelamin,Kelas,Email,Alamat,TempatLahir,TanggalLahir};
+                    String TempatLahir = rs.getString(5);
+                    String TanggalLahir = rs.getString(6);
+                    String Email = rs.getString(7);
+                    String AlamatE = rs.getString(8);
+                   
+                    String data[] = {NIS,NamaSiswa,JenisKelamin,Kelas,TempatLahir,TanggalLahir,Email,AlamatE};
                     dtm.addRow(data);
             }
         }   catch(SQLException ex){
@@ -599,13 +609,44 @@ public class CRUD extends javax.swing.JFrame {
             DATA.setModel(dtm);            
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    public void setTanggal(){
-        java.util.Date skrg = new java.util.Date();
-        java.text.SimpleDateFormat kal = new
-            java.text.SimpleDateFormat("dd/MM/yyy");
-        labeltanggal.setText(kal.format(skrg));
-     
-    }
-   
+
+    private void SetJam() {
+        ActionListener taskPerformer = new ActionListener(){
+        public void actionPerformed(ActionEvent evt){
+                String nolh = "";
+                String nolm = "";
+                String nols = "";
+                
+                
+                Date dt = new Date();
+                int vh = dt.getHours();
+                int vm = dt.getMinutes();
+                int vs = dt.getSeconds();
+                
+                if (vh<=9){
+                    nolh = "0";
+                } if (vm <= 9) {
+                    nolm = "0";
+                } if (vs <= 9){
+                    nols = "0";
+                }
+               
+                
+                String h = nolh + Integer.toString(vh);
+                String m = nolm + Integer.toString(vm);
+                String s = nols + Integer.toString(vs);
+                labeljam.setText(h+":"+m+":"+s);
+            }
+        };
+    new Timer(100, taskPerformer).start();
 }
+      
+
+    private void SetTanggal() {
+        java.util.Date now = new java.util.Date();
+        java.text.SimpleDateFormat kal = new java.text.SimpleDateFormat("yyy/MM/dd");
+        labeltanggal.setText(kal.format(now));
+    }
+}
+
+ 
